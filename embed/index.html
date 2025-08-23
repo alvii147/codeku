@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Embed</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="mainContainer">
+    <div class="headerContainer">
+      <div class="languageSelectContainer">
+        <select
+          id="language-select"
+          class="languageSelect btn"
+        >
+        </select>
+      </div>
+      <div class="logoContainer">
+        <a href="https://github.com/alvii147/codeku" target="_blank" rel="noopener noreferrer">
+          <img class="logo" alt="codeku logo" src="../img/logo.svg" height="50px" />
+        </a>
+      </div>
+    </div>
+    <div class="editorContainer">
+      <div id="editor" class="editor"></div>
+    </div>
+    <div class="buttonsContainer">
+      <button
+        id="run-button"
+        class="btn"
+      >
+        <svg
+          version="1.1"
+          id="Layer_1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          x="0px"
+          y="0px"
+          width="16"
+          height="16"
+          viewBox="0 0 92.2 122.88"
+          style="enable-background:new 0 0 92.2 122.88"
+          xml:space="preserve"
+        >
+          <g>
+            <polygon
+              fill="currentColor"
+              class="runButtonSVGPolygon"
+              points="92.2,60.97 0,122.88 0,0 92.2,60.97"
+            />
+          </g>
+        </svg>
+        Run
+      </button>
+    </div>
+    <div class="resultsContainer">
+      <div class="results">
+        <p id="results-stdout" class="resultsStdout"></p>
+        <p id="results-stderr" class="resultsStderr"></p>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="index.js"></script>
+</body>
+</html>

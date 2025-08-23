@@ -1,0 +1,168 @@
+:root {
+  --bg-color-1: #f3d459;
+  --bg-color-2: #e5b340;
+  --bg-color-3: #40444b;
+  --fg-color-1: #222222;
+  --fg-color-2: #dfdfdf;
+  --fg-color-3: #f03a3a;
+  --editor-bg-color-1: #282C34;
+  --editor-bg-color-2: #293245;
+  --button-bg-color-1: #E6A0F4;
+  --button-bg-color-2: #D57BE8;
+}
+
+html {
+  height: 100vh;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.mainContainer {
+  height: calc(100% - 50px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  padding: 10px 10px 25px 10px;
+  background-color: var(--bg-color-1);
+  background: linear-gradient(to right, var(--bg-color-1), var(--bg-color-2));
+  box-shadow: 4px 4px 0px var(--fg-color-1);
+}
+
+.headerContainer {
+  display: flex;
+  height: 50px;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 4px 6px 4px;
+}
+
+.languageSelectContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 1;
+}
+
+.logoContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  flex: 1;
+}
+
+.logo {
+  transition: 0.1s;
+}
+
+.logo:hover {
+  transform: translate(-2px, -2px);
+}
+
+.languageSelect:focus {
+  outline: none;
+}
+
+.editorContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-height: calc(60% - 50px);
+  flex: 1;
+}
+
+.editor {
+  background-color: var(--editor-bg-color-1);
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  cursor: text;
+  border-radius: 3px;
+}
+
+.cm-editor {
+  outline: none !important;
+}
+
+.buttonsContainer {
+  display: flex;
+  height: 50px;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 4px 4px 6px 4px;
+}
+
+.resultsContainer {
+  display: flex;
+  justify-content: stretch;
+  align-items: stretch;
+  max-height: calc(40% - 50px);
+  width: 100%;
+  flex: 1;
+}
+
+.results {
+  background-color: var(--editor-bg-color-1);
+  background: linear-gradient(to right, var(--editor-bg-color-1), var(--editor-bg-color-2));
+  flex: 1;
+  padding: 10px 20px 10px 20px;
+  border-radius: 4px;
+  overflow: auto;
+}
+
+.resultsStdout {
+  color: var(--fg-color-2);
+  font-family: monospace;
+  font-size: 14px;
+}
+
+.resultsStderr {
+  color: var(--fg-color-3);
+  font-family: monospace;
+  font-size: 14px;
+}
+
+.btn {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  color: var(--fg-color-1);
+  background-color: var(--button-bg-color-1);
+  background: linear-gradient(to right, var(--button-bg-color-1), var(--button-bg-color-2));
+  border: 4px solid var(--fg-color-1);
+  padding: 6px 10px;
+  font-family: monospace;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 4px 4px 0px var(--fg-color-1);
+  transition: all 0.1s ease-in-out;
+}
+
+.btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px var(--fg-color-1);
+}
+
+.btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px var(--fg-color-1);
+}
+
+.runButtonSVGPolygon {
+  fill-rule: evenodd;
+  clip-rule: evenodd;
+}

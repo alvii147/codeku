@@ -20,7 +20,7 @@ const LANGUAGE_CONFIG = {
     code: `#include <stdio.h>
 
 int main() {
-    printf("Hello, codeku!\\n");
+    printf("Hello, from codeku!\\n");
     return 0;
 }`
   },
@@ -32,7 +32,7 @@ int main() {
 using namespace std;
 
 int main() {
-    cout << "Hello, codeku!" << endl;
+    cout << "Hello, from codeku!" << endl;
     return 0;
 }`
   },
@@ -45,7 +45,7 @@ int main() {
 import "fmt"
 
 func main() {
-    fmt.Println("Hello, codeku!")
+    fmt.Println("Hello, from codeku!")
 }`,
   },
   java: {
@@ -54,7 +54,7 @@ func main() {
     name: 'Java',
     code: `public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello, codeku!");
+        System.out.println("Hello, from codeku!");
     }
 }`
   },
@@ -62,20 +62,20 @@ func main() {
     extension: javascript(),
     version: '18.15.0',
     name: 'JavaScript',
-    code: `console.log("Hello, codeku!");`,
+    code: `console.log("Hello, from codeku!");`,
   },
   python: {
     extension: python(),
     version: '3.10.0',
     name: 'Python',
-    code: `print("Hello, codeku!")`,
+    code: `print("Hello, from codeku!")`,
   },
   php: {
     extension: php(),
     version: '8.2.3',
     name: 'PHP',
     code: `<?php
-    echo "Hello, codeku!";
+    echo "Hello, from codeku!";
 ?>`,
   },
   rust: {
@@ -83,30 +83,15 @@ func main() {
     version: '1.68.2',
     name: 'Rust',
     code: `fn main() {
-    println!("Hello, World!");
+    println!("Hello, from World!");
 }`,
   },
   typescript: {
     extension: javascript({ typescript: true }),
     version: '5.0.3',
     name: 'TypeScript',
-    code: `console.log("Hello, codeku!");`,
+    code: `console.log("Hello, from codeku!");`,
   },
-};
-
-const getParams = () => {
-  const params = new URLSearchParams(window.location.search);
-  const languageOptions = params.get('language_options')?.split(',') ?? Object.keys(LANGUAGE_CONFIG);
-  const language = (params.get('language') ?? languageOptions[0]);
-
-  languageOptions.forEach((lang) => {
-    LANGUAGE_CONFIG[lang].code = params.get(`code_${lang}`) ?? LANGUAGE_CONFIG[lang].code
-  });
-
-  return {
-    language,
-    languageOptions,
-  };
 };
 
 const pistonExecute = (language, version, code) => {
@@ -129,6 +114,21 @@ const pistonExecute = (language, version, code) => {
   });
 };
 
+const getParams = () => {
+  const params = new URLSearchParams(window.location.search);
+  const languageOptions = params.get('language_options')?.split(',') ?? Object.keys(LANGUAGE_CONFIG);
+  const language = (params.get('language') ?? languageOptions[0]);
+
+  languageOptions.forEach((lang) => {
+    LANGUAGE_CONFIG[lang].code = params.get(`code_${lang}`) ?? LANGUAGE_CONFIG[lang].code
+  });
+
+  return {
+    language,
+    languageOptions,
+  };
+};
+
 const params = getParams();
 const compartment = new Compartment();
 const editor = new EditorView({
@@ -141,29 +141,7 @@ const editor = new EditorView({
   ],
 });
 
-document.getElementById('editor').addEventListener('click', (e) => {
-  editor.focus();
-});
-
-const languageSelectElement = document.getElementById('language-select');
-params.languageOptions.forEach((language) => {
-  languageSelectElement.add(new Option(LANGUAGE_CONFIG[language].name, language));
-});
-
-languageSelectElement.value = params.language;
-
-document.getElementById('language-select').addEventListener('change', (e) => {
-  editor.dispatch({
-    effects: compartment.reconfigure(LANGUAGE_CONFIG[e.target.value].extension),
-    changes: {
-      from: 0,
-      to: editor.state.doc.length,
-      insert: LANGUAGE_CONFIG[e.target.value].code,
-    },
-  });
-});
-
-document.getElementById('run-button').addEventListener('click', () => {
+const runCode = () => {
   const language = document.getElementById('language-select').value;
   const languageConfig = LANGUAGE_CONFIG[language];
 
@@ -177,11 +155,39 @@ document.getElementById('run-button').addEventListener('click', () => {
     return response.json();
   })
   .then(data => {
-    console.log(data);
     document.getElementById('results-stdout').innerHTML = data.run.stdout.replace(/\n/g, '<br>');
     document.getElementById('results-stderr').innerHTML = data.run.stderr.replace(/\n/g, '<br>');
   })
   .catch(error => {
     console.error(error);
   });
+};
+
+const resetCode = () => {
+  const language = document.getElementById('language-select').value;
+  editor.dispatch({
+    effects: compartment.reconfigure(LANGUAGE_CONFIG[language].extension),
+    changes: {
+      from: 0,
+      to: editor.state.doc.length,
+      insert: LANGUAGE_CONFIG[language].code,
+    },
+  });
+};
+
+const focusEditor = () => {
+  editor.focus();
+};
+
+const languageSelectElement = document.getElementById('language-select');
+params.languageOptions.forEach((language) => {
+  languageSelectElement.add(new Option(LANGUAGE_CONFIG[language].name, language));
 });
+
+languageSelectElement.value = params.language;
+runCode();
+
+document.getElementById('editor').addEventListener('click', focusEditor);
+document.getElementById('language-select').addEventListener('change', resetCode);
+document.getElementById('reset-button').addEventListener('click', resetCode);
+document.getElementById('run-button').addEventListener('click', runCode);

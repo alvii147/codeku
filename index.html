@@ -13,12 +13,78 @@
     }
 
     h1 {
+      margin-top: 25px;
+      margin-bottom: 10px;
+      font-size: 24pt;
       font-family: monospace;
     }
 
-    p {
-      font-size: 11pt;
+    p, table {
+      font-size: 12pt;
       font-family: monospace;
+      line-height: 22px;
+    }
+
+    code {
+      font-family: monospace;
+      color: #1b6123;
+      background-color: #dfe8d7;
+      font-size: 85%;
+      padding: 0.2em 0.4em;
+      margin: 0;
+      border-radius: 6px;
+      user-select: all;
+    }
+
+    pre {
+      color: #e8ece6;
+      background-color: #031e02;
+      padding: 16px;
+      overflow: auto;
+      border-radius: 6px;
+      user-select: all;
+    }
+
+    pre code {
+      font-family: monospace;
+      font-size: 85%;
+      background-color: transparent;
+      padding: 0;
+      margin: 0;
+      border: 0;
+      white-space: pre;
+    }
+
+    table {
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    table th, table td {
+      border: 1px solid #d0d7de;
+      padding: 6px 13px;
+    }
+
+    table th {
+      background-color: #eff1d3;
+      font-weight: 600;
+      text-align: left;
+    }
+
+    table tr:nth-child(even) {
+      background-color: #f6f8fa;
+    }
+
+    .preBlue {
+      color: #78bde6;
+    }
+
+    .preYellow {
+      color: #e9c76c;
+    }
+
+    .preGreen {
+      color: #70f174;
     }
 
     .mainContainer {
@@ -28,7 +94,8 @@
       align-items: stretch;
       background-color: #f4f6f0;
       width: 700px;
-      padding: 15px;
+      max-width: 85%;
+      padding: 35px;
       box-shadow: 0px 0px 20px 5px rgba(3, 27, 18, 0.3);
       border-radius: 5px;
     }
@@ -39,32 +106,54 @@
       justify-content: center;
       align-items: center;
       padding: 10px 0px 10px 0px;
-      gap: 10px;
-    }
-
-    .bannerImg {
-      box-shadow: 0px 0px 10px 5px rgba(3, 27, 18, 0.3);
+      gap: 15px;
+      flex-wrap: wrap;
     }
 
     .badge {
       box-shadow: 0px 0px 4px 1px rgba(3, 27, 18, 0.3);
     }
+
+    .tableContainer {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .link {
+      color: #298534;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border-bottom: 1px solid transparent;
+    }
+
+    .link:hover {
+      color: #0f3714;
+      border-bottom: 1px solid #0f3714;
+      text-shadow: 0 1px 2px rgba(0, 68, 153, 0.2);
+    }
+
+    .link:active {
+      color: #2b8350;
+      transform: translateY(1px);
+    }
+
+    .link:visited {
+      color: #2b8350;
+    }
+
+    .link:visited:hover {
+      color: #146435;
+      border-bottom-color: #146435;
+    }
   </style>
 </head>
 <body>
   <div class="mainContainer">
-    <a
-      target="_blank"
-      rel="noopener noreferrer"
-      href="https://www.pcrf.net"
-    >
-      <img
-        class="bannerImg"
-        alt="Free Palestine"
-        src="https://hinds-banner.vercel.app/free-palestine?variant=olive"
-        width="100%"
-      />
+    <div class="centerContainer">
+      <a target="_blank" rel="noopener noreferrer" href="https://www.pcrf.net">
+      <img alt="Genocide Watch" src="https://hinds-banner.vercel.app/genocide-watch?variant=olive" width="100%" />
     </a>
+    </div>
     <div class="centerContainer">
       <img class="logo" alt="codeku logo" src="img/logo.svg" width="300px" />
     </div>
@@ -83,28 +172,231 @@
       <a
         target="_blank"
         rel="noopener noreferrer"
-        href="https://github.com/alvii147/codeku"
+        href="https://github.com/alvii147/codeku/blob/main/LICENSE"
       >
         <img
           class="badge"
           alt="codeku License"
-          src="https://img.shields.io/github/license/alvii147/codeku?style=for-the-badge"
+          src="https://img.shields.io/github/license/alvii147/codeku?label=license&style=for-the-badge"
+        />
+      </a>
+      <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://www.pcrf.net"
+      >
+        <img
+            class="footerBadge"
+            alt="PCRF"
+            src="https://img.shields.io/badge/PCRF-0068A7?logo=data:image/png;base64,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&style=for-the-badge"
         />
       </a>
     </div>
     <p>
       <strong><i>codeku</i></strong> is a lightweight, plug-and-play, embeddable code execution widget for the web.
     </p>
-    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
-    <p>Check out my code below</p>
+    <h1>
+      Quick Start
+    </h1>
+    <p>
+      To get started, embed the URL <code>https://alvii147.github.io/codeku/embed</code> in an <code>iframe</code>:
+    </p>
+    <pre><span class="preBlue">&lt;iframe</span>
+    <span class="preYellow">src</span>=<span class="preGreen">"https://alvii147.github.io/codeku/embed?language=python"</span>
+    <span class="preYellow">width</span>=<span class="preGreen">"100%"</span>
+    <span class="preYellow">height</span>=<span class="preGreen">"400"</span>
+    <span class="preYellow">frameborder</span>=<span class="preGreen">"0"</span>
+    <span class="preYellow">allowfullscreen</span>
+<span class="preBlue">&gt;</span>
+<span class="preBlue">&lt;/iframe&gt;</span></pre>
+    <p>
+      The embedded widget will look like this:
+    </p>
     <iframe
-      src="https://alvii147.github.io/codeku/embed?language=c&language_options=c&code_c=%23include%20%3Cstdio.h%3E%0A%0Aint%20main%28%29%20%7B%0A%09int%20x%20%5B%5D%20%3D%20%7B3%2C%201%2C%204%7D%3B%0A%09printf%28%22%25d%5Cn%22%2C%20x%5B2%5D%29%3B%0A%0A%09return%200%3B%0A%7D"
+      src="https://alvii147.github.io/codeku/embed?language=python"
       width="100%"
-      height="500"
+      height="400"
       frameborder="0"
       allowfullscreen
     >
     </iframe>
+    <h1>
+      Languages
+    </h1>
+    <p>
+      <strong><i>codeku</i></strong> currently supports the following languages:
+    </p>
+    <div class="centerContainer">
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://gcc.gnu.org/"
+      >
+        <img
+          class="badge"
+          src="https://img.shields.io/badge/C-00599C?logo=c&logoColor=white&style=for-the-badge"
+          alt="C"
+        />
+      </a>
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://gcc.gnu.org/"
+      >
+        <img
+          class="badge"
+          src="https://img.shields.io/badge/C++-00599C?logo=c%2B%2B&logoColor=white&style=for-the-badge"
+          alt="C++"
+        />
+      </a>
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://go.dev/"
+      >
+        <img
+          class="badge"
+          src="https://img.shields.io/badge/Go-00ADD8?logo=go&logoColor=white&style=for-the-badge"
+          alt="Go"
+        />
+      </a>
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://www.java.com/"
+      >
+        <img
+          class="badge"
+          src="https://img.shields.io/badge/Java-007396?logo=java&logoColor=white&style=for-the-badge"
+          alt="Java"
+        />
+      </a>
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://nodejs.org/"
+      >
+        <img
+          class="badge"
+          src="https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black&style=for-the-badge"
+          alt="JavaScript"
+        />
+      </a>
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://www.python.org/"
+      >
+        <img
+          class="badge"
+          src="https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white&style=for-the-badge"
+          alt="Python"
+        />
+      </a>
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://www.php.net/"
+      >
+        <img
+          class="badge"
+          src="https://img.shields.io/badge/PHP-777BB4?logo=php&logoColor=white&style=for-the-badge"
+          alt="PHP"
+        />
+      </a>
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://www.rust-lang.org/"
+      >
+        <img
+          class="badge"
+          src="https://img.shields.io/badge/Rust-000000?logo=rust&logoColor=white&style=for-the-badge"
+          alt="Rust"
+        />
+      </a>
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://www.typescriptlang.org/"
+      >
+        <img
+          class="badge"
+          src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white&style=for-the-badge"
+          alt="TypeScript"
+        />
+      </a>
+    </div>
+    <h1>
+      Parameters
+    </h1>
+    <p>
+      You can customize <strong><i>codeku</i></strong> using the following query parameters:
+    </p>
+    <div class="tableContainer">
+      <table>
+        <tr>
+          <th>
+            Parameter
+          </th>
+          <th>
+            Description
+          </th>
+          <th>
+            Options
+          </th>
+          <th>
+            Example
+          </th>
+        </tr>
+        <tr>
+          <td>
+            <code>language</code>
+          </td>
+          <td>
+            Default programming language.
+          </td>
+          <td>
+            <code>c</code>, <code>cpp</code>, <code>go</code>, <code>java</code>, <code>javascript</code>, <code>python</code>, <code>php</code>, <code>rust</code>, <code>typescript</code>
+          </td>
+          <td>
+            <code>language=python</code>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <code>language_options</code>
+          </td>
+          <td>
+            Comma-separated list of programming languages to include in dropdown.
+          </td>
+          <td>
+          </td>
+          <td>
+            <code>language=go,python,rust</code>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <code>code_{language}</code>
+          </td>
+          <td>
+            Initial code set for a language, url encoded.
+          </td>
+          <td>
+          </td>
+          <td>
+            <code>code_python=print(42)</code>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <h1>
+      Example
+    </h1>
+    <p>
+      Check out the example blog post on <a class="link" target="_blank" rel="noopener noreferrer" href="examples/defying-array-indexing-convention">Defying Array Indexing Convention</a>.
+    </p>
   </div>
 </body>
 </html>

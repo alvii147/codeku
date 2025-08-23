@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Defying Array Indexing Convention</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #ece6b3;
+      background: linear-gradient(to right, #ece6b3, #f0d4b8);
+    }
+
+    h1 {
+      margin-top: 25px;
+      margin-bottom: 10px;
+      font-size: 24pt;
+      font-family: monospace;
+    }
+
+    p, table {
+      font-size: 12pt;
+      font-family: monospace;
+      line-height: 22px;
+    }
+
+    code {
+      font-family: monospace;
+      color: #1b6123;
+      background-color: #dfe8d7;
+      font-size: 85%;
+      padding: 0.2em 0.4em;
+      margin: 0;
+      border-radius: 6px;
+      user-select: all;
+    }
+
+    pre {
+      color: #e8ece6;
+      background-color: #031e02;
+      padding: 16px;
+      overflow: auto;
+      border-radius: 6px;
+      user-select: all;
+    }
+
+    pre code {
+      font-family: monospace;
+      font-size: 85%;
+      background-color: transparent;
+      padding: 0;
+      margin: 0;
+      border: 0;
+      white-space: pre;
+    }
+
+    table {
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    table th, table td {
+      border: 1px solid #d0d7de;
+      padding: 6px 13px;
+    }
+
+    table th {
+      background-color: #eff1d3;
+      font-weight: 600;
+      text-align: left;
+    }
+
+    table tr:nth-child(even) {
+      background-color: #f6f8fa;
+    }
+
+    .preBlue {
+      color: #78bde6;
+    }
+
+    .preYellow {
+      color: #e9c76c;
+    }
+
+    .preGreen {
+      color: #70f174;
+    }
+
+    .mainContainer {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: stretch;
+      background-color: #f4f6f0;
+      width: 700px;
+      max-width: 85%;
+      padding: 35px;
+      box-shadow: 0px 0px 20px 5px rgba(3, 27, 18, 0.3);
+      border-radius: 5px;
+    }
+
+    .centerContainer {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      padding: 10px 0px 10px 0px;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      box-shadow: 0px 0px 4px 1px rgba(3, 27, 18, 0.3);
+    }
+
+    .tableContainer {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .link {
+      color: #298534;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border-bottom: 1px solid transparent;
+    }
+
+    .link:hover {
+      color: #0f3714;
+      border-bottom: 1px solid #0f3714;
+      text-shadow: 0 1px 2px rgba(0, 68, 153, 0.2);
+    }
+
+    .link:active {
+      color: #2b8350;
+      transform: translateY(1px);
+    }
+
+    .link:visited {
+      color: #2b8350;
+    }
+
+    .link:visited:hover {
+      color: #146435;
+      border-bottom-color: #146435;
+    }
+  </style>
+</head>
+<body>
+  <div class="mainContainer">
+    <h1>
+      Defying Array Indexing Convention
+    </h1>
+    <p>
+      In a language like C, where object-oriented programming is considered heresy, arrays are one of the most important data structures. Arrays are indexed by non-negative indegers, starting from zero. For example:
+    </p>
+    <iframe
+      src="https://alvii147.github.io/codeku/embed?language=c&language_options=c&code_c=%23include%20%3Cstdio.h%3E%0A%0Aint%20main%28%29%20%7B%0A%09int%20x%20%5B%5D%20%3D%20%7B3%2C%201%2C%204%7D%3B%0A%09printf%28%22%25d%5Cn%22%2C%20x%5B2%5D%29%3B%0A%0A%09return%200%3B%0A%7D"
+      width="100%"
+      height="500"
+      frameborder="0"
+      allowfullscreen
+    >
+    </iframe>
+    <p>
+      In the example above, accessing array <code>x</code> at index <code>2</code> gives us <code>4</code>. That makes sense. Not really rocket science.
+    </p>
+    <p>
+      But why? What does it <i>mean</i> to access at index <code>2</code>? And what even is <code>x</code>?
+    </p>
+    <iframe
+      src="https://alvii147.github.io/codeku/embed?language=c&language_options=c&code_c=%23include%20%3Cstdio.h%3E%0A%0Aint%20main%28%29%20%7B%0A%09int%20x%20%5B%5D%20%3D%20%7B3%2C%201%2C%204%7D%3B%0A%09printf%28%22%25p%5Cn%22%2C%20x%29%3B%0A%0A%09return%200%3B%0A%7D"
+      width="100%"
+      height="500"
+      frameborder="0"
+      allowfullscreen
+    >
+    </iframe>
+    <p>
+      Oh I see, <code>x</code> is in fact a <i>pointer</i>. <code>x</code> points to the address of the array. In particular, it points to the address where the first element of the array is stored. We can see this by dereferencing <code>x</code>:
+    </p>
+    <iframe
+      src="https://alvii147.github.io/codeku/embed?language=c&language_options=c&code_c=%23include%20%3Cstdio.h%3E%0A%0Aint%20main%28%29%20%7B%0A%09int%20x%20%5B%5D%20%3D%20%7B3%2C%201%2C%204%7D%3B%0A%09printf%28%22%25d%5Cn%22%2C%20%2Ax%29%3B%0A%0A%09return%200%3B%0A%7D"
+      width="100%"
+      height="500"
+      frameborder="0"
+      allowfullscreen
+    >
+    </iframe>
+    <p>
+      Dereferencing <code>x</code> gives us <code>3</code>, which <i>is</i> the first element of the array.
+    </p>
+    <p>
+      But wait, what if instead of the first element, we want to access the element at index <code>2</code> like we did above? Well then we just add <code>2</code> to <code>x</code>'s address and dereference that:
+    </p>
+    <iframe
+      src="https://alvii147.github.io/codeku/embed?language=c&language_options=c&code_c=%23include%20%3Cstdio.h%3E%0A%0Aint%20main%28%29%20%7B%0A%09int%20x%20%5B%5D%20%3D%20%7B3%2C%201%2C%204%7D%3B%0A%09printf%28%22%25d%5Cn%22%2C%20%2A%28x%20%2B%202%29%29%3B%0A%0A%09return%200%3B%0A%7D"
+      width="100%"
+      height="500"
+      frameborder="0"
+      allowfullscreen
+    >
+    </iframe>
+    <p>
+      That seems to work! Adding <code>2</code> to <code>x</code> advances the pointer by two 4-byte addresses (in most systems anyway), which lands us on the third element of the array, <code>4</code>. In fact the conventional way of indexing arrays, i.e. <code>x[i]</code>, is actually just <i>syntactic sugar</i> for <code>*(x + i)</code>. They are equivalent.
+    </p>
+    <p>
+      Hold on there, isn't addition commutative though? In other words, <code>x + 2</code> should be equivalent to <code>2 + x</code>. So I could just as easily do:
+    </p>
+    <iframe
+      src="https://alvii147.github.io/codeku/embed?language=c&language_options=c&code_c=%23include%20%3Cstdio.h%3E%0A%0Aint%20main%28%29%20%7B%0A%09int%20x%20%5B%5D%20%3D%20%7B3%2C%201%2C%204%7D%3B%0A%09printf%28%22%25d%5Cn%22%2C%20%2A%282%20%2B%20x%29%29%3B%0A%0A%09return%200%3B%0A%7D"
+      width="100%"
+      height="500"
+      frameborder="0"
+      allowfullscreen
+    >
+    </iframe>
+    <p>
+      Interesting! Wait a minute, does that mean, instead of accessing <code>x</code> at index <code>2</code>, we can also access <code>2</code> at index <code>x</code>?
+    </p>
+    <iframe
+      src="https://alvii147.github.io/codeku/embed?language=c&language_options=c&code_c=%23include%20%3Cstdio.h%3E%0A%0Aint%20main%28%29%20%7B%0A%09int%20x%20%5B%5D%20%3D%20%7B3%2C%201%2C%204%7D%3B%0A%09printf%28%22%25d%5Cn%22%2C%202%5Bx%5D%29%3B%0A%0A%09return%200%3B%0A%7D"
+      width="100%"
+      height="500"
+      frameborder="0"
+      allowfullscreen
+    >
+    </iframe>
+    <p>
+      We most certainly can! No compilcation error, we get the output we expect. On first glance it does not make sense at all, but given a basic understanding of array indexing in C, it makes a lot of sense!
+    </p>
+    <p>
+      <strong>Disclaimer:</strong> Please do not index arrays like this. You're gonna send the Senior Developer on your team to the ER.
+    </p>
+  </div>
+</body>
+</html>

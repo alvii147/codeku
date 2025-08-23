@@ -101,6 +101,7 @@ body {
   justify-content: flex-end;
   align-items: center;
   padding: 4px 4px 6px 4px;
+  gap: 10px;
 }
 
 .resultsContainer {

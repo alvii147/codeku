@@ -192,7 +192,7 @@
       Dereferencing <code>x</code> gives us <code>3</code>, which <i>is</i> the first element of the array.
     </p>
     <p>
-      But wait, what if instead of the first element, we want to access the element at index <code>2</code> like we did above? Well then we just add <code>2</code> to <code>x</code>'s address and dereference that:
+      But wait, what if instead of the first element, we want to access the element at index <code>2</code> like we did above? Well then, we just add <code>2</code> to <code>x</code>'s address and dereference that:
     </p>
     <iframe
       src="https://alvii147.github.io/codeku/embed?language=c&language_options=c&code_c=%23include%20%3Cstdio.h%3E%0A%0Aint%20main%28%29%20%7B%0A%09int%20x%20%5B%5D%20%3D%20%7B3%2C%201%2C%204%7D%3B%0A%09printf%28%22%25d%5Cn%22%2C%20%2A%28x%20%2B%202%29%29%3B%0A%0A%09return%200%3B%0A%7D"
@@ -231,7 +231,7 @@
       We most certainly can! No compilcation error, we get the output we expect. On first glance it does not make sense at all, but given a basic understanding of array indexing in C, it makes a lot of sense!
     </p>
     <p>
-      <strong>Disclaimer:</strong> Please do not index arrays like this. You're gonna send the Senior Developer on your team to the ER.
+      <strong>Disclaimer:</strong> This blog is purely informational and doesn't suggest you actually index arrays like this. Seriously. You'll give your team's Senior Developer brain damage.
     </p>
   </div>
 </body>

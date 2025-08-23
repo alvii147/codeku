@@ -185,7 +185,6 @@ params.languageOptions.forEach((language) => {
 });
 
 languageSelectElement.value = params.language;
-runCode();
 
 document.getElementById('editor').addEventListener('click', focusEditor);
 document.getElementById('language-select').addEventListener('change', resetCode);

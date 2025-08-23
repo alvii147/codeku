@@ -53,6 +53,6 @@ Parameter | Description | Options | Example
 `language_options` | Comma-separated list of programming languages to include in dropdown. | &nbsp; | `language=go,python,rust`
 `code_{language}` | Initial code set for a language, url encoded. | &nbsp; | `code_python=print(42)`
 
-# Example
+# Examples
 
 Check out the example blog post on [Defying Array Indexing Convention](https://alvii147.github.io/codeku/examples/defying-array-indexing-convention).

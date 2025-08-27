@@ -11,7 +11,16 @@ import { python } from 'https://esm.sh/@codemirror/lang-python';
 import { php } from 'https://esm.sh/@codemirror/lang-php';
 import { rust } from 'https://esm.sh/@codemirror/lang-rust';
 
+/** 
+ * Public URL for Piston API code execution endpoint.
+ * @constant {string}
+ */
 const PISTON_EXECUTE_URL = 'https://emkc.org/api/v2/piston/execute';
+
+/**
+ * Language configuration for supported programming languages.
+ * @constant {Object.<string, {extension: any, version: string, name: string, code: string}>}
+ */
 const LANGUAGE_CONFIG = {
   c: {
     extension: cpp(),
@@ -94,6 +103,15 @@ func main() {
   },
 };
 
+/**
+ * Executes code on Piston.
+ * @async
+ * @function pistonExecute
+ * @param {string} language - Programming language.
+ * @param {string} version - Version of programming language.
+ * @param {string} code - Raw code to execute.
+ * @returns {Promise<Response>} Response from Piston.
+ */
 const pistonExecute = (language, version, code) => {
   return fetch(PISTON_EXECUTE_URL, {
     method: 'POST',
@@ -101,26 +119,28 @@ const pistonExecute = (language, version, code) => {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      'language': language,
-      'version': version,
-      'files': [
-        {
-          'content': code,
-        }
-      ],
-      'stdin': '',
-      'args': [],
+      language,
+      version,
+      files: [{ content: code }],
+      stdin: '',
+      args: [],
     }),
   });
 };
 
+/**
+ * Extracts URL query parameters and overrides configuration settings with URL query parameters.
+ * @function getParams
+ * @returns {{language: string, languageOptions: string[]}} Query parameters.
+ */
 const getParams = () => {
   const params = new URLSearchParams(window.location.search);
   const languageOptions = params.get('language_options')?.split(',') ?? Object.keys(LANGUAGE_CONFIG);
   const language = (params.get('language') ?? languageOptions[0]);
 
   languageOptions.forEach((lang) => {
-    LANGUAGE_CONFIG[lang].code = params.get(`code_${lang}`) ?? LANGUAGE_CONFIG[lang].code
+    // override default code with code provided in query parameter
+    LANGUAGE_CONFIG[lang].code = params.get(`code_${lang}`) ?? LANGUAGE_CONFIG[lang].code;
   });
 
   return {
@@ -129,42 +149,44 @@ const getParams = () => {
   };
 };
 
-const params = getParams();
-const compartment = new Compartment();
-const editor = new EditorView({
-  doc: LANGUAGE_CONFIG[params.language].code,
-  parent: document.getElementById('editor'),
-  extensions: [
-    basicSetup,
-    oneDark,
-    compartment.of(LANGUAGE_CONFIG[params.language].extension),
-  ],
-});
-
-const runCode = () => {
+/**
+ * Executes editor code and displays results.
+ * @async
+ * @function runCode
+ * @param {EditorView} editor - Editor object.
+ */
+const runCode = (editor) => {
   const language = document.getElementById('language-select').value;
+  const resultsStdout = document.getElementById('results-stdout');
+  const resultsStderr = document.getElementById('results-stderr')
+
   const languageConfig = LANGUAGE_CONFIG[language];
 
-  pistonExecute(
-    language, languageConfig.version, editor.state.doc.toString())
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('network failure');
-    }
-
-    return response.json();
-  })
-  .then(data => {
-    document.getElementById('results-stdout').innerHTML = data.run.stdout.replace(/\n/g, '<br>');
-    document.getElementById('results-stderr').innerHTML = data.run.stderr.replace(/\n/g, '<br>');
-  })
-  .catch(error => {
-    console.error(error);
-  });
+  pistonExecute(language, languageConfig.version, editor.state.doc.toString())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('network failure');
+      }
+      return response.json();
+    })
+    .then(data => {
+      resultsStdout.innerHTML = data.run.stdout.replace(/\n/g, '<br>');
+      resultsStderr.innerHTML = data.run.stderr.replace(/\n/g, '<br>');
+    })
+    .catch(error => {
+      console.error(error);
+    });
 };
 
-const resetCode = () => {
+/**
+ * Resets editor to default code for currently selected language.
+ * @function resetCode
+ * @param {EditorView} editor - Editor object.
+ * @param {Compartment} compartment - Editor compartment object.
+ */
+const resetCode = (editor, compartment) => {
   const language = document.getElementById('language-select').value;
+
   editor.dispatch({
     effects: compartment.reconfigure(LANGUAGE_CONFIG[language].extension),
     changes: {
@@ -175,18 +197,41 @@ const resetCode = () => {
   });
 };
 
-const focusEditor = () => {
-  editor.focus();
+/**
+ * Sets language dropdown options.
+ * @function setLanguageOptions
+ * @param {{language: string, languageOptions: string[]}} params - Query parameters.
+ */
+const setLanguageOptions = (params) => {
+  const languageSelectElement = document.getElementById('language-select');
+
+  params.languageOptions.forEach((language) => {
+    languageSelectElement.add(new Option(LANGUAGE_CONFIG[language].name, language));
+  });
+
+  languageSelectElement.value = params.language;
 };
 
-const languageSelectElement = document.getElementById('language-select');
-params.languageOptions.forEach((language) => {
-  languageSelectElement.add(new Option(LANGUAGE_CONFIG[language].name, language));
+const params = getParams();
+const compartment = new Compartment();
+
+const editor = new EditorView({
+  doc: LANGUAGE_CONFIG[params.language].code,
+  parent: document.getElementById('editor'),
+  extensions: [
+    basicSetup,
+    oneDark,
+    compartment.of(LANGUAGE_CONFIG[params.language].extension),
+  ],
 });
 
-languageSelectElement.value = params.language;
-
-document.getElementById('editor').addEventListener('click', focusEditor);
-document.getElementById('language-select').addEventListener('change', resetCode);
-document.getElementById('reset-button').addEventListener('click', resetCode);
-document.getElementById('run-button').addEventListener('click', runCode);
+// set languages dropdown options
+setLanguageOptions(params);
+// set editor to focus on click of its surrounding div
+document.getElementById('editor').addEventListener('click', () => editor.focus());
+// set editor code to reset on language change
+document.getElementById('language-select').addEventListener('change', () => resetCode(editor, compartment));
+// set editor code to reset on reset button click
+document.getElementById('reset-button').addEventListener('click', () => resetCode(editor, compartment));
+// set current editor code to get executed on run button click
+document.getElementById('run-button').addEventListener('click', () => runCode(editor));

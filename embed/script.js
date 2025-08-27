@@ -112,20 +112,32 @@ func main() {
  * @param {string} code - Raw code to execute.
  * @returns {Promise<Response>} Response from Piston.
  */
-const pistonExecute = (language, version, code) => {
-  return fetch(PISTON_EXECUTE_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      language,
-      version,
-      files: [{ content: code }],
-      stdin: '',
-      args: [],
-    }),
-  });
+const pistonExecute = async (language, version, code) => {
+  const max_retries = 3;
+  const delay = 1000;
+
+  for (let attempt = 0; attempt < max_retries; attempt++) {
+    const response = await fetch(PISTON_EXECUTE_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        language,
+        version,
+        files: [{ content: code }],
+        stdin: '',
+        args: [],
+      }),
+    });
+
+    if (response.status !== 429) {
+      return response;
+    }
+
+    // exponential backoff delay
+    await new Promise(res => setTimeout(res, delay * Math.pow(2, attempt)));
+  }
 };
 
 /**
@@ -158,23 +170,33 @@ const getParams = () => {
 const runCode = (editor) => {
   const language = document.getElementById('language-select').value;
   const resultsStdout = document.getElementById('results-stdout');
-  const resultsStderr = document.getElementById('results-stderr')
+  const resultsStderr = document.getElementById('results-stderr');
+  const runButton = document.getElementById('run-button');
 
-  const languageConfig = LANGUAGE_CONFIG[language];
+  runButton.disabled = true;
 
-  pistonExecute(language, languageConfig.version, editor.state.doc.toString())
+  pistonExecute(language, LANGUAGE_CONFIG[language].version, editor.state.doc.toString())
     .then(response => {
       if (!response.ok) {
         throw new Error('network failure');
       }
+
       return response.json();
     })
     .then(data => {
+      if (data.run.signal == 'SIGKILL') {
+        throw new Error('server time out');
+      }
+
       resultsStdout.innerHTML = data.run.stdout.replace(/\n/g, '<br>');
       resultsStderr.innerHTML = data.run.stderr.replace(/\n/g, '<br>');
     })
     .catch(error => {
-      console.error(error);
+      resultsStdout.innerHTML = '';
+      resultsStderr.innerHTML = error;
+    })
+    .finally(() => {
+      runButton.disabled = false;
     });
 };
 
@@ -235,3 +257,6 @@ document.getElementById('language-select').addEventListener('change', () => rese
 document.getElementById('reset-button').addEventListener('click', () => resetCode(editor, compartment));
 // set current editor code to get executed on run button click
 document.getElementById('run-button').addEventListener('click', () => runCode(editor));
+
+// run code initially
+runCode(editor);

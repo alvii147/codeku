@@ -113,14 +113,14 @@ func main() {
  * @returns {Promise<Response>} Response from Piston.
  */
 const pistonExecute = async (language, version, code) => {
-  const max_retries = 3;
+  const max_retries = 8;
   const delay = 1000;
 
   for (let attempt = 0; attempt < max_retries; attempt++) {
     const response = await fetch(PISTON_EXECUTE_URL, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         language,
@@ -143,12 +143,13 @@ const pistonExecute = async (language, version, code) => {
 /**
  * Extracts URL query parameters and overrides configuration settings with URL query parameters.
  * @function getParams
- * @returns {{language: string, languageOptions: string[]}} Query parameters.
+ * @returns {{language: string, languageOptions: string[], editorTheme: str}} Query parameters.
  */
 const getParams = () => {
   const params = new URLSearchParams(window.location.search);
-  const languageOptions = params.get('language_options')?.split(',') ?? Object.keys(LANGUAGE_CONFIG);
+  const languageOptions = params.get('language_options')?.toLowerCase().split(',') ?? Object.keys(LANGUAGE_CONFIG);
   const language = (params.get('language') ?? languageOptions[0]);
+  const editorTheme = params.get('editor_theme')?.toLowerCase() === 'light' ? 'light' : 'dark';
 
   languageOptions.forEach((lang) => {
     // override default code with code provided in query parameter
@@ -158,6 +159,7 @@ const getParams = () => {
   return {
     language,
     languageOptions,
+    editorTheme,
   };
 };
 
@@ -173,6 +175,8 @@ const runCode = (editor) => {
   const resultsStderr = document.getElementById('results-stderr');
   const runButton = document.getElementById('run-button');
 
+  resultsStdout.innerHTML = '';
+  resultsStderr.innerHTML = '';
   runButton.disabled = true;
 
   pistonExecute(language, LANGUAGE_CONFIG[language].version, editor.state.doc.toString())
@@ -222,7 +226,7 @@ const resetCode = (editor, compartment) => {
 /**
  * Sets language dropdown options.
  * @function setLanguageOptions
- * @param {{language: string, languageOptions: string[]}} params - Query parameters.
+ * @param {{language: string, languageOptions: string[], editorTheme: str}} params - Query parameters.
  */
 const setLanguageOptions = (params) => {
   const languageSelectElement = document.getElementById('language-select');
@@ -242,10 +246,17 @@ const editor = new EditorView({
   parent: document.getElementById('editor'),
   extensions: [
     basicSetup,
-    oneDark,
     compartment.of(LANGUAGE_CONFIG[params.language].extension),
+    ...(params.editorTheme === 'dark' ? oneDark : []),
   ],
 });
+
+// set CSS classes based on editor theme
+if (params.editorTheme === 'light') {
+  document.getElementById('editor').classList.add('editorLight');
+  document.getElementById('results').classList.add('resultsLight');
+  document.getElementById('results-stdout').classList.add('resultsStdoutLight');
+}
 
 // set languages dropdown options
 setLanguageOptions(params);

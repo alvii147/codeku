@@ -52,6 +52,7 @@ Parameter | Description | Options | Example
 `language` | Default programming language. | `c`, `cpp`, `go`, `java`, `javascript`, `python`, `php`, `rust`, `typescript` | `language=python`
 `language_options` | Comma-separated list of programming languages to include in dropdown. | &nbsp; | `language=go,python,rust`
 `code_{language}` | Initial code set for a language, url encoded. | &nbsp; | `code_python=print(42)`
+`editor_theme` | Theme to use for editor. | `light`, `dark` | `editor_theme=light`
 
 # Examples
 

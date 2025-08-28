@@ -8,6 +8,8 @@
   --fg-color-4: #8d8d8d;
   --editor-bg-color-1: #282C34;
   --editor-bg-color-2: #293245;
+  --editor-bg-color-3: #ececec;
+  --editor-bg-color-4: #f5f1e4;
   --button-bg-color-1: #E6A0F4;
   --button-bg-color-2: #D57BE8;
 }
@@ -91,6 +93,10 @@ body {
   border-radius: 3px;
 }
 
+.editorLight {
+  background-color: var(--editor-bg-color-3);
+}
+
 .cm-editor {
   outline: none !important;
 }
@@ -123,10 +129,19 @@ body {
   overflow: auto;
 }
 
+.resultsLight {
+  background-color: var(--editor-bg-color-3);
+  background: linear-gradient(to right, var(--editor-bg-color-3), var(--editor-bg-color-4));
+}
+
 .resultsStdout {
   color: var(--fg-color-2);
   font-family: monospace;
   font-size: 14px;
+}
+
+.resultsStdoutLight {
+  color: var(--fg-color-1);
 }
 
 .resultsStderr {
